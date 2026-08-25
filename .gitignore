@@ -1,0 +1,12 @@
+# Entorno virtual y caché de Python
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Configuración sensible (API keys, URLs de PROD/DEV)
+.env
+
+# Artefactos generados por las corridas de pruebas
+reports/
+logs/

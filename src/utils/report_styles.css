@@ -1,0 +1,385 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    margin: 20px;
+}
+
+/* ENCABEZADO */
+.endpoint-header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+}
+
+.method-badge {
+    background: #27ae60;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-weight: bold;
+}
+
+/* KPIS */
+.kpi-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.kpi-card {
+    flex: 1;
+    background: white;
+    padding: 18px;
+    border-radius: 18px;
+    border-top: 4px solid #3498db;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-card.success {
+    border-top-color: #2ecc71;
+}
+
+.kpi-card.danger {
+    border-top-color: #e74c3c;
+}
+
+.kpi-card.warning {
+    border-top-color: #f39c12;
+}
+
+.kpi-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* BOTONES DE FILTRADO */
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilos base del botón */
+.filter-btn {
+    padding: 8px 16px;
+    border-radius: 16px;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    color: #334155;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+/* Estado ACTIVO (Tiene prioridad sobre el hover) */
+.filter-btn.active {
+    background-color: #3666cc !important;
+    color: #ffffff !important;
+    border-color: #5b89ee !important;
+    cursor: default;
+    /* Opcional: cambia el cursor ya que está seleccionado */
+}
+
+/* HOVER: Solo se aplica si el botón NO está activo */
+.filter-btn:not(.active):hover {
+    background-color: #f1f5f9;
+}
+
+.filter-btn.btn-passed:not(.active):hover {
+    border-color: #16a34a;
+    color: #16a34a;
+    background-color: #ffffff;
+}
+
+.filter-btn.btn-failed:not(.active):hover {
+    border-color: #dc2626;
+    color: #dc2626;
+    background-color: #f8f8f8;
+}
+
+/* TARJETAS DE TEST */
+.test-card {
+    background: white;
+    border-radius: 18px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 5px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.test-card[data-status="PASSED"] {
+    border-left-color: #2ecc71;
+}
+
+.test-card[data-status="FAILED"] {
+    border-left-color: #e74c3c;
+}
+
+.test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 14px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+}
+
+.bg-pass {
+    background-color: #2ecc71;
+}
+
+.bg-fail {
+    background-color: #e74c3c;
+}
+
+/* BADGES DE TIEMPO DE RESPUESTA */
+.time-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+.time-badge.fast {
+    background-color: #e8f8f5;
+    color: #117a65;
+    border-color: #a3e4d7;
+}
+
+.time-badge.slow {
+    background-color: #fef9e7;
+    color: #b7950b;
+    border-color: #f9e79f;
+}
+
+/* LOGS / PRE */
+pre {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 10px;
+    border-radius: 15px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+/* Botón Volver Arriba */
+#scrollToTopBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 99;
+    width: 45px;
+    height: 45px;
+    border: none;
+    outline: none;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+
+    /* Animación de entrada/salida */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+}
+
+/* Efecto Hover */
+#scrollToTopBtn:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-3px);
+    /* Eleva ligeramente el botón */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* Clase que lo hace visible cuando se activa el scroll */
+#scrollToTopBtn.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ocultar en la versión de impresión / PDF */
+@media print {
+    #scrollToTopBtn {
+        display: none !important;
+    }
+}
+
+
+/* Ajustes exclusivos para impresión y PDF */
+@media print {
+    body {
+        background-color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        font-size: 12px;
+        /* Reducimos ligeramente la fuente base para el PDF */
+    }
+
+    /* Ocultar botones interactivos que no tienen sentido en un documento PDF impreso */
+    .filter-container,
+    .filter-btn {
+        display: none !important;
+    }
+
+    /* Evitar cortes feos entre páginas */
+    .kpi-container,
+    .test-card,
+    .endpoint-header {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* Forzar que los colores de fondo e insignias se mantengan visibles */
+    .badge,
+    .method-badge,
+    .kpi-card,
+    .time-badge {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+/* =============================================================
+   REPORTE PROD vs DEV — clases exclusivas de la comparación
+   directa entre ambientes (no se usan en el reporte de regresión)
+   ============================================================= */
+
+/* Chips de tiempo por ambiente en el header de cada tarjeta */
+.env-time-group {
+    display: flex;
+    gap: 6px;
+}
+.time-badge.env-prod {
+    background-color: #eaeef5;
+    color: #2c3e50;
+    border-color: #cdd6e3;
+}
+.time-badge.env-dev {
+    background-color: #e6f6f7;
+    color: #0e7c86;
+    border-color: #b9e6e9;
+}
+
+/* Panel comparativo lado a lado */
+.env-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.env-col {
+    border-radius: 14px;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+}
+
+.env-col-label {
+    font-size: 0.75em;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.env-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.env-col-prod { background: #f7f9fc; }
+.env-col-prod .env-col-label { color: #2c3e50; }
+.env-col-prod .env-dot { background: #2c3e50; }
+
+.env-col-dev { background: #f2fbfb; }
+.env-col-dev .env-col-label { color: #0e7c86; }
+.env-col-dev .env-dot { background: #0e7c86; }
+
+.env-status-line {
+    font-size: 0.85em;
+    color: #64748b;
+}
+.env-status-line b { color: #334155; }
+
+/* Lista de diferencias estructuradas (campo / valor PROD / valor DEV) */
+.diff-list {
+    margin-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 10px;
+}
+
+.diff-list-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #b91c1c;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.diff-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    padding: 7px 10px;
+    background: #fff7f7;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 0.88em;
+}
+
+.diff-path {
+    font-family: "Consolas", "Courier New", monospace;
+    color: #7f1d1d;
+    font-weight: 600;
+}
+
+.diff-value {
+    font-family: "Consolas", "Courier New", monospace;
+    padding: 1px 6px;
+    border-radius: 6px;
+}
+
+.diff-value.prod { background: #eaeef5; color: #2c3e50; }
+.diff-value.dev { background: #e6f6f7; color: #0e7c86; }
+
+.diff-arrow { color: #94a3b8; }
+
+/* Nota de alcance: aclara qué compara este reporte frente al de regresión */
+.scope-note {
+    background: #fffbea;
+    border: 1px solid #fde68a;
+    color: #78350f;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 0.85em;
+    margin-bottom: 20px;
+}
+
+@media print {
+    .env-compare-grid,
+    .diff-list {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
