@@ -1,4 +1,32 @@
 # src/utils/response_comparator.py
+import re
+
+# La respuesta de la API duplica la tabla de amortización (anidada bajo
+# amortizacion_conceptos y otra vez "aplanada" a nivel raíz), así que un
+# mismo cambio real aparece dos veces con paths distintos apuntando al mismo
+# valor. Se normaliza el path anidado a la forma "aplanada" para poder
+# deduplicar antes de mostrar el reporte.
+_AMORT_NESTED_RE = re.compile(r"^(root\[\d+\])\.amortizacion_conceptos\[\d+\]\.(amortizaciones\[\d+\]\..+)$")
+
+
+def _canonicalize_diff_path(path: str) -> str:
+    match = _AMORT_NESTED_RE.match(path)
+    if match:
+        return f"{match.group(1)}.{match.group(2)}"
+    return path
+
+
+def _dedupe_differences(differences: list) -> list:
+    seen = set()
+    deduped = []
+    for d in differences:
+        key = (_canonicalize_diff_path(d["path"]), d["type"], repr(d.get("prod_value")), repr(d.get("dev_value")))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(d)
+    return deduped
+
 
 def compare_api_responses(prod_res: dict, dev_res: dict) -> dict:
     """
@@ -41,6 +69,7 @@ def compare_api_responses(prod_res: dict, dev_res: dict) -> dict:
             "dev_value": dev_data,
         })
 
+    differences = _dedupe_differences(differences)
     is_equal = len(differences) == 0
 
     return {

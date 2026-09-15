@@ -10,3 +10,4 @@ __pycache__/
 # Artefactos generados por las corridas de pruebas
 reports/
 logs/
+storage/

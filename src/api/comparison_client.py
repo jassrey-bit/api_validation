@@ -1,18 +1,17 @@
 # src/api/comparison_client.py
-import os
 import asyncio
 import httpx
-from dotenv import load_dotenv
 
-load_dotenv()
+from config.settings import Settings, settings as default_settings
+
 
 class ComparisonApiClient:
-    def __init__(self):
-        self.prod_base_url = os.getenv("PROD_BASE_URL", "https://msc-sofom.cloudgsf.com/msc-calculation-methods")
-        self.dev_base_url = os.getenv("DEV_BASE_URL", "https://dev-msc-sofom.cloudgsf.com/msc-calculation-methods")
+    def __init__(self, settings: Settings = default_settings):
+        self.prod_base_url = settings.PROD_BASE_URL
+        self.dev_base_url = settings.DEV_BASE_URL
 
-        self.prod_api_key = os.getenv("PROD_API_KEY", "")
-        self.dev_api_key = os.getenv("DEV_API_KEY", "")
+        self.prod_api_key = settings.PROD_API_KEY
+        self.dev_api_key = settings.DEV_API_KEY
 
     async def post_to_both_environments(self, endpoint_path: str, payload: dict):
         """
@@ -21,12 +20,12 @@ class ComparisonApiClient:
         """
         headers_prod = {
             "Content-Type": "application/json",
-            "x-api-key": self.prod_api_key
+            "Simulation-API-Key": self.prod_api_key
         }
 
         headers_dev = {
             "Content-Type": "application/json",
-            "x-api-key": self.dev_api_key
+            "Simulation-API-Key": self.dev_api_key
         }
 
         url_prod = f"{self.prod_base_url}{endpoint_path}"

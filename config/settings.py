@@ -6,6 +6,11 @@ class Settings(BaseSettings):
     API_URL: str
     API_KEY: str
 
+    PROD_BASE_URL: str = "https://msc-sofom.cloudgsf.com/msc-calculation-methods"
+    PROD_API_KEY: str = ""
+    DEV_BASE_URL: str = "https://dev-msc-sofom.cloudgsf.com/msc-calculation-methods"
+    DEV_API_KEY: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
