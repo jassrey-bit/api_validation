@@ -15,6 +15,7 @@ sys.path.insert(0, str(src_dir))
 
 # Importamos la función de generación de reporte
 from src.utils.report_generator import generate_execution_reports
+from src.utils.diff_formatting import parse_structural_diff
 
 # Variable global para guardar los resultados de cada test durante la sesión
 session_test_results = []
@@ -73,6 +74,12 @@ def pytest_runtest_makereport(item, call):
         comparison_details = getattr(item, "comparison_details", None)
         if comparison_details:
             test_info["comparison_details"] = comparison_details
+
+        # Si es una prueba de regresión con diferencias estructurales (DeepDiff),
+        # las traducimos a filas legibles para el reporte HTML/PDF.
+        regression_details = getattr(item, "regression_details", None)
+        if regression_details:
+            test_info["diff_rows"] = parse_structural_diff(regression_details.get("structural_diff"))
         
         session_test_results.append(test_info)
 

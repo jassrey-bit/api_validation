@@ -102,7 +102,24 @@ REGRESSION_TEMPLATE_HTML = """
 
             <p>{{ test.description }}</p>
 
-            {% if test.status == 'FAILED' and test.error_log %}
+            {% if test.status == 'FAILED' and test.diff_rows %}
+            <div class="diff-list">
+                <div class="diff-list-title">{{ test.diff_rows | length }} diferencia(s) estructural(es)</div>
+                {% for row in test.diff_rows %}
+                <div class="diff-row">
+                    <span class="diff-path">{{ row.label }}</span>
+                    <span class="diff-change-type">{{ row.change_label }}</span>
+                    {% if row.before is not none %}
+                    <span class="diff-value expected">{{ row.before }}</span>
+                    <span class="diff-arrow">→</span>
+                    {% endif %}
+                    {% if row.after is not none %}
+                    <span class="diff-value actual">{{ row.after }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% elif test.status == 'FAILED' and test.error_log %}
             <pre>{{ test.error_log }}</pre>
             {% endif %}
         </div>

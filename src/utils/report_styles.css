@@ -363,6 +363,18 @@ pre {
 .diff-value.prod { background: #eaeef5; color: #2c3e50; }
 .diff-value.dev { background: #e6f6f7; color: #0e7c86; }
 
+/* Variante para el reporte de regresión: "esperado" (fixture) vs "obtenido"
+   (respuesta real de la API), en vez de PROD/DEV. */
+.diff-value.expected { background: #f1f5f9; color: #475569; }
+.diff-value.actual { background: #fdf2e9; color: #b45309; }
+
+.diff-change-type {
+    font-size: 0.8em;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
 .diff-arrow { color: #94a3b8; }
 
 /* Nota de alcance: aclara qué compara este reporte frente al de regresión */
