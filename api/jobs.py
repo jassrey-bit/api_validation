@@ -59,6 +59,8 @@ class Job:
     status: str = "pending"  # pending | done | error
     result: list[dict] | None = None
     error: str | None = None
+    tolerance_decimals: int | None = None
+    tolerance_fields: list[str] | None = None
 
     @property
     def dir(self) -> Path:
@@ -96,6 +98,8 @@ def _write_metadata(job: Job) -> None:
         "status": job.status,
         "error": job.error,
         "result": job.result,
+        "tolerance_decimals": job.tolerance_decimals,
+        "tolerance_fields": job.tolerance_fields,
     }
     try:
         job.metadata_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -111,6 +115,8 @@ def _job_from_metadata(data: dict) -> Job:
         status=data["status"],
         error=data.get("error"),
         result=data.get("result"),
+        tolerance_decimals=data.get("tolerance_decimals"),
+        tolerance_fields=data.get("tolerance_fields"),
     )
     if job.status == "pending":
         # El worker que lo procesaba murió junto con el proceso anterior.
@@ -185,8 +191,13 @@ def _resolve_cases(
     return cases
 
 
-def _create_and_submit(mode: Literal["regression", "comparison"], cases: list[dict]) -> str:
-    job = Job(id=uuid.uuid4().hex, mode=mode)
+def _create_and_submit(
+    mode: Literal["regression", "comparison"],
+    cases: list[dict],
+    tolerance_decimals: int | None = None,
+    tolerance_fields: list[str] | None = None,
+) -> str:
+    job = Job(id=uuid.uuid4().hex, mode=mode, tolerance_decimals=tolerance_decimals, tolerance_fields=tolerance_fields)
     with _lock:
         _jobs[job.id] = job
 
@@ -202,15 +213,24 @@ def submit_run_job(
     mode: Literal["regression", "comparison"],
     case_ids: list[str] | None = None,
     custom_cases: list[dict] | None = None,
+    tolerance_decimals: int | None = None,
+    tolerance_fields: list[str] | None = None,
 ) -> str:
     _purge_expired_jobs()
     cases = _resolve_cases(mode, case_ids, custom_cases)
-    return _create_and_submit(mode, cases)
+    return _create_and_submit(mode, cases, tolerance_decimals, tolerance_fields)
 
 
 def _run_job(job: Job, cases: list[dict]) -> None:
     try:
-        job.result = asyncio.run(run_batch(job.mode, cases))
+        job.result = asyncio.run(
+            run_batch(
+                job.mode,
+                cases,
+                tolerance_decimals=job.tolerance_decimals,
+                tolerance_fields=job.tolerance_fields,
+            )
+        )
         job.status = "done"
     except Exception as e:
         logger.exception("Error ejecutando el job %s", job.id)
@@ -267,4 +287,4 @@ def rerun_job(job_id: str) -> str | None:
         return None
 
     cases = json.loads(original.resolved_cases_path.read_text(encoding="utf-8"))
-    return _create_and_submit(original.mode, cases)
+    return _create_and_submit(original.mode, cases, original.tolerance_decimals, original.tolerance_fields)

@@ -53,7 +53,13 @@ def list_fixtures() -> list[dict]:
 def create_run(body: CreateRunRequest) -> dict:
     custom_cases = [c.model_dump() for c in body.custom_cases] if body.custom_cases else None
     try:
-        job_id = submit_run_job(body.mode, case_ids=body.case_ids, custom_cases=custom_cases)
+        job_id = submit_run_job(
+            body.mode,
+            case_ids=body.case_ids,
+            custom_cases=custom_cases,
+            tolerance_decimals=body.tolerance_decimals,
+            tolerance_fields=body.tolerance_fields,
+        )
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
     return {"job_id": job_id, "status": "pending"}

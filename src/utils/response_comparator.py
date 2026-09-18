@@ -34,6 +34,12 @@ def compare_api_responses(prod_res: dict, dev_res: dict) -> dict:
     Devuelve un diccionario con 'is_equal', 'differences' (lista de diffs
     estructurados: path/type/prod_value/dev_value) y 'differences_text'
     (la misma información en formato de texto plano, para logs/asserts).
+
+    La comparación es exacta: si se quiere tolerar ruido de redondeo en
+    campos puntuales (p. ej. 'cat'), se debe pre-redondear esos campos en
+    prod_res/dev_res antes de llamar a esta función (ver
+    src/utils/numeric_tolerance.py), en vez de aplicar una tolerancia
+    genérica aquí que enmascararía diferencias reales en otros campos.
     """
     differences = []
 
